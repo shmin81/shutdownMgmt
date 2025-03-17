@@ -1,0 +1,19 @@
+{
+  "name": "pc-express",
+  "version": "0.9.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "node-notifier": "^10.0.1",
+    "express-session": "^1.18.1",
+    "morgan": "^1.10.0",
+    "nunjucks": "^3.2.4"
+  }
+}
