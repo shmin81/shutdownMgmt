@@ -52,7 +52,7 @@ function rightTimeAfterDelay(cnt) {
   })
 
   setTimeout(() => {
-    if (cnt > MaxCnt) {
+    if (cnt >= MaxCnt) {
       notifier.notify({
         title: `운동 종료 알림`,
         message: `운동을 종료합니다.`,

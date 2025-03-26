@@ -137,7 +137,6 @@ function shutdownAfterDelay(minutes) {
 }
 
 function shutdownInfoAfterDelay(minutes) {
-  //setMaxSizeEdge()
   console.log(`shutdownInfoAfterDelay: ${minutes} minutes`)
   // 알림 메시지 표시
   notifier.notify({
@@ -145,53 +144,6 @@ function shutdownInfoAfterDelay(minutes) {
     message: `${minutes} 분 후에 이 PC는 자동으로 종료합니다.`,
     sound: true,
   })
-  /*
-  // 7초 후에 알림 메시지 닫기
-  setTimeout(() => {
-    notifier.notify({
-      title: '',
-      message: '',
-      closeLabel: '닫기',
-      timeout: 1,
-    })
-  }, 7000)*/
-
-  // setTimeout(() => {
-  //   setFullSizeEdge()
-  // }, 10000)
-}
-
-function setMaxSizeEdge() {
-  // Microsoft Edge 최대화??
-  exec('powershell -command "Get-Process msedge | ForEach-Object { $_.MainWindowHandle } | ForEach-Object { [void][System.Runtime.InteropServices.Marshal]::Release($_) }"', (error, stdout, stderr) => {
-    if (error) {
-      console.error('Error:', error.message)
-      return
-    }
-    if (stderr) {
-      console.error(`Stderr: ${stderr}`)
-      return
-    }
-    console.log(`Stdout: ${stdout}`)
-  })
-}
-
-function setFullSizeEdge() {
-  // Microsoft Edge 전체화면 모드로 전환??
-  exec(
-    'powershell -command "Add-Type -TypeDefinition @\'using System;using System.Runtime.InteropServices;public class P{[DllImport(\\"user32.dll\\")]public static extern int ShowWindow(IntPtr hWnd, int nCmdShow);[DllImport(\\"user32.dll\\")]public static extern bool SetForegroundWindow(IntPtr hWnd);}\'@;Get-Process msedge | ForEach-Object { $hwnd = $_.MainWindowHandle; [P]::ShowWindow($hwnd, 3); [P]::SetForegroundWindow($hwnd) }"',
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error('Error:', error.message)
-        return
-      }
-      if (stderr) {
-        console.error(`Stderr: ${stderr}`)
-        return
-      }
-      console.log(`Stdout: ${stdout}`)
-    }
-  )
 }
 
 module.exports = { shutdownAfterDelay, shutdownSoon, getRemainedSeconds }
