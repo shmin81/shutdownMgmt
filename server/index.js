@@ -32,9 +32,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'list.html'))
 })
 
-// 동영상 파일 제공
-const maxMp4Cnt = 2 // 최대 동영상 요청 수
-const mp4Root = 'C:/movies/'
+const confFile = path.join(__dirname, 'confFile.json')
 const requestedMp4File = path.join(__dirname, 'requestedMp4.json')
 
 // 요청 기록을 읽거나 초기화
@@ -44,11 +42,23 @@ if (fs.existsSync(requestedMp4File)) {
 } else {
   fs.writeFileSync(requestedMp4File, JSON.stringify(requestedMp4, null, 2))
 }
+let conf = { maxMp4Cnt: 2, mp4Root: 'C:/movies/' }
+if (!fs.existsSync(confFile)) {
+  console.log('confFile.json not found. Using default values.')
+  fs.writeFileSync(confFile, JSON.stringify(conf, null, 2))
+}
+try {
+  conf = JSON.parse(fs.readFileSync(confFile, 'utf8'))
+} catch (err) {
+  console.error('Error reading configuration file:', err)
+  process.exit(1)
+}
 
+// 동영상 요청 수를 추적하는 변수
 let requestedMp4Count = 0
 app.get('/video/:name', (req, res) => {
   const fname = req.params.name.endsWith('.mp4') ? req.params.name : `${req.params.name}.mp4`
-  const videoPath = path.join(mp4Root, fname)
+  const videoPath = path.join(conf.mp4Root, fname)
 
   console.log('Requested video:', fname)
 
@@ -79,7 +89,7 @@ app.get('/video/:name', (req, res) => {
       return
     }
   }
-  if (requestedMp4Count >= maxMp4Cnt) {
+  if (requestedMp4Count >= conf.maxMp4Cnt) {
     console.log(`Video ${fname} request denied. Maximum request count reached.`)
     res.status(403).send('Maximum video request count reached.')
     return
@@ -131,7 +141,7 @@ app.get('/fitnessAlarm', (req, res) => {
 
 // mp4 파일 목록을 반환하는 API
 app.get('/api/videos', (req, res) => {
-  fs.readdir(mp4Root, (err, files) => {
+  fs.readdir(conf.mp4Root, (err, files) => {
     if (err) {
       console.error('Error reading directory:', err)
       res.status(500).send('Failed to read video directory.')
