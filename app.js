@@ -5,6 +5,7 @@ const nunjucks = require('nunjucks')
 const cors = require('cors')
 
 const indexRouter = require('./routes')
+const playRouter = require('./routes/play')
 //const shutdownRouter = require('./routes/shutdownX')
 
 const app = express()
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cors()) // Enable All CORS Requests
 
 app.use('/', indexRouter)
+app.use('/play', playRouter)
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`)

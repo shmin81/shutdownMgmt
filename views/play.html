@@ -1,0 +1,78 @@
+{% extends 'layout_play.html' %}
+
+{% block content %}
+  <video id="videoPlayer" controlslist="nodownload" disablePictureInPicture>
+    <source src="http://localhost:3333/video/loading" type="video/mp4">
+    사용하시는 브라우저는 동영상을 지원하지 않습니다.
+  </video>
+  <p>
+    <button id="playPauseButton">재생 (Play)</button>
+    <br>
+    <label for="volumeControl">볼륨:</label>
+    <input id="volumeControl" type="range" min="0" max="1" step="0.1">
+    <p id="message"></p>
+  </p>
+
+  <script>
+    const video = document.getElementById('videoPlayer');
+    const playPauseButton = document.getElementById('playPauseButton');
+    const volumeControl = document.getElementById('volumeControl');
+    const message = document.getElementById('message');
+    let played = false; // 동영상이 재생된 상태를 추적하는 변수
+
+    // URL의 쿼리 파라미터 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoName = urlParams.get('video'); // 예: ?video=today
+    //const serverIp = '{{server_ip}}'; // 서버 IP 주소
+    const videoSrc = `http://localhost:3333/video/${videoName}`; // 동영상 URL
+
+    // 재생/일시정지 버튼 클릭 이벤트
+    playPauseButton.addEventListener('click', () => {
+      if (!played) {
+        played = true; // 동영상이 재생된 상태로 변경
+        if (videoName) {
+          console.log(`Video name from query: ${videoSrc}`);
+          video.src = videoSrc; // 동적으로 src 설정
+          video.load(); // 동영상 로드
+          //video.play(); // 동영상 재생
+        } else {
+          message.textContent = 'No video name provided in the query.';
+        }
+      } else {
+        console.log('Video already played.'); // 동영상이 이미 재생된 경우
+      }
+      // 동영상이 재생 중인지 확인하고 재생/일시정지 처리
+      if (video.paused) {
+        video.play();
+        playPauseButton.textContent = '정지 (Pause)'; // 버튼 텍스트 변경
+      } else {
+        video.pause();
+        playPauseButton.textContent = '재생 (Play)'; // 버튼 텍스트 변경
+      }
+    });
+
+    // 동영상이 끝까지 재생되었을 때 실행
+    video.addEventListener('ended', () => {
+      message.textContent = '동영상 재생이 완료되었습니다. 다시 재생할 수 없습니다.';
+      playPauseButton.disabled = true; // 버튼 비활성화
+
+      // VideoDone API 호출
+      fetch(`http://localhost:3333/videoDone/${videoName}`)
+        .then(response => {
+          if (response.ok) {
+            console.log('VideoDone API 호출 성공');
+          } else {
+            console.error('VideoDone API 호출 실패');
+          }
+        })
+        .catch(error => {
+          console.error('VideoDone API 호출 중 오류 발생:', error);
+        });
+    });
+
+    // 볼륨 조절 이벤트
+    volumeControl.addEventListener('input', (event) => {
+      video.volume = event.target.value;
+    });
+  </script>
+{% endblock %}

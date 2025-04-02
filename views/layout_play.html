@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>{{title}}</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+  
+      #videoPlayer {
+        width: 86vw; /* 가로 화면의 85% */
+        height: calc(86vw * 9 / 16); /* 16:9 비율 유지 */
+        max-width: 1920px; /* 최대 너비 제한 (선택 사항) */
+        max-height: 1080px; /* 최대 높이 제한 (선택 사항) */
+        background-color: black; /* 비디오 배경색 */
+      }
+  
+      #playPauseButton {
+        height: 3em; /* 버튼 높이를 3배로 설정 */
+        font-size: 1em; /* 텍스트 크기 조정 (선택 사항) */
+        margin: 2px; /* 버튼에 여백 추가 */
+        padding: 5px 20px; /* 버튼에 패딩 추가 */
+      }
+    </style>
+  </head>
+  
+  <body>
+    {% block content %}
+    {% endblock %}
+  </body>
+</html>
